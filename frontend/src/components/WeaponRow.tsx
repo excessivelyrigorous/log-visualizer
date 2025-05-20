@@ -14,7 +14,7 @@ const TooltipContent = ({ kill }: { kill: Kill }) => <div className="flex flex-c
 export const WeaponRow = ({ kills }: { kills: Kill[]; }) => {
     return <div className="flex flex-row gap-1">
         {kills.map((kill, idx) =>
-            <div className={idx === 0 && kills.length > 1 ? "tooltip tooltip-left" : idx === kills.length - 1 && kills.length > 1 ? "tooltip tooltip-right" : "tooltip"}>
+            <div key={kill.player2} className={idx === 0 && kills.length > 1 ? "tooltip tooltip-left" : idx === kills.length - 1 && kills.length > 1 ? "tooltip tooltip-right" : "tooltip"}>
                 <div className="tooltip-content">
                     <TooltipContent kill={kill} />
                 </div>

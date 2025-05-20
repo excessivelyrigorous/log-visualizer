@@ -104,9 +104,9 @@ const RoundSegment = ({ round, roundIdx, matchId }: { round: MatchRound, roundId
         <LineSegment3
             height={getKillGroupTime(partitionedKills[0]) - timeToSeconds(round.roundStartTime)}
             icon={<div className="avatar avatar-placeholder -top-1 tooltip">
-                <p className="tooltip-content">
-                    {Object.entries(round).map(([key, value]) => <p>{`${key}: ${key.toLowerCase().includes("time") ? timeToString(value) : JSON.stringify(value)}`}</p>)}
-                </p>
+                <div className="tooltip-content">
+                    {Object.entries(round).map(([key, value]) => <p key={key}>{`${key}: ${key.toLowerCase().includes("time") ? timeToString(value) : JSON.stringify(value)}`}</p>)}
+                </div>
                 <div className="bg-indigo-800 text-neutral-content w-8 rounded-full">
                     <span className="text-xs">{roundIdx + 1}</span>
                 </div>
