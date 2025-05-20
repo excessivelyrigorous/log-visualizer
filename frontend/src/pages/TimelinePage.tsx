@@ -7,22 +7,7 @@ export const TimelinePage = ({ matchId }: { matchId: string }) => {
     if (!rounds) {
         return <span className="loading loading-spinner loading-xl"></span>
     }
-    const teams = _.uniq(rounds.map(r => r.winningTeamId))
-    if (teams?.length !== 2) {
-        throw new Error(`Expected exactly two teams. Got ${JSON.stringify(teams)}`)
-    }
     const scores = rounds[rounds.length - 1].teamScores
-    console.log('scores', scores)
-    const score0 = scores.find(s => s.team == teams[0])
-    const score1 = scores.find(s => s.team == teams[1])
-    console.log('score0', score0)
-    console.log('teams[0]', teams[0])
-    console.log('teams[1]', teams[1])
-    console.log('scores.find(s => s.team)', scores.find(s => s.team === 'GGBET'))
-    console.log('score1', score1)
-    console.log(`'TeamVitality' == teams[0]`, 'TeamVitality' == teams[0])
-    console.log(`'NAVI GGBET' == teams[1]`, 'NAVI GGBET' == teams[1])
-    console.log('typeof teams[0]', typeof teams[0])
     return <div className="w-full">
         <div className="flex items-center gap-2">
             <div className="flex flex-row flex-1 justify-between items-center">

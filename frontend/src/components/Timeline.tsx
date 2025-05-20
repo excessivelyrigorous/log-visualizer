@@ -1,15 +1,14 @@
 import React, { useState, type ReactNode } from "react"
 import { useGetKills, useGetMatch, useGetMatches, useGetRounds } from "../api/matches"
-import type { MatchRound } from "../api/models/processedModels"
+import type { Kill, MatchRound } from "../api/models/processedModels"
 import type { RawLogEntryTime } from "../api/models/rawModels"
 import { numberToHeightClass } from "../utils/numberToHeightClass"
-import { WeaponIcon } from "./Weapon"
 import * as _ from "lodash"
+import { WeaponRow } from "./WeaponRow"
+import { timeToSeconds, timeToString } from "../utils/time"
 
-const timeToString = (t: RawLogEntryTime) => `${t.hour}:${t.minute}:${t.second}`
-const timeToSeconds = (t: RawLogEntryTime) => t.hour * 60 * 60 + t.minute * 60 + t.second
 const getLineHeightClassName = (duration: number) => {
-    const n = Math.round(duration / 2)
+    const n = Math.round(duration)
     return numberToHeightClass(n)
 }
 
@@ -42,7 +41,7 @@ const TimelineInner = ({ matchId }: { matchId: string }) => {
                         height={getPreroundDuration(roundIdx)}
                     >
                     </LineSegment2>
-                    <RoundSegment round={round} matchId={matchId} />
+                    <RoundSegment round={round} roundIdx={roundIdx} matchId={matchId} />
                 </React.Fragment>
             )}
             <LineSegment2
@@ -90,23 +89,38 @@ const LineSegment = ({ height, color }: { height: number, color?: boolean }) => 
     return <hr className={getLineHeightClassName(height) + " " + col} />
 }
 
-const RoundSegment = ({ round, matchId }: { round: MatchRound, matchId: string }) => {
+const RoundSegment = ({ round, roundIdx, matchId }: { round: MatchRound, roundIdx: number, matchId: string }) => {
     const { data, error, isLoading } = useGetKills(matchId)
     if (!data) {
         return null
     }
     const kills = data.filter(k => timeToSeconds(k.time) > timeToSeconds(round.roundStartTime) && timeToSeconds(k.time) < timeToSeconds(round.roundEndTime))
-    const weapons = _.uniq(data.map(k => k.weapon))
-    //console.log('weapons', weapons)
+    const partitionedKillsDict = _.groupBy(kills, k => Math.ceil(timeToSeconds(k.time) / 5))
+    const partitionedKills = _.values(partitionedKillsDict)
+    //const getKillGroupTime = (ks: Kill[]) => ks.map(k => k.time).map(timeToSeconds).reduce((a, b) => a + b, 0) / ks.length
+    const getKillGroupTime = (ks: Kill[]) => Math.min(...ks.map(k => k.time).map(timeToSeconds))
+    const roundTip = JSON.stringify({ ...round, roundStartTime: timeToString(round.roundStartTime), roundEndTime: timeToString(round.roundEndTime), time: timeToString(round.time) })
     return <div>
-        {kills.map((kill, idx) => {
-            const killTime = timeToSeconds(kill.time)
-            const prevTime = idx === 0 ? round.roundStartTime : kills[idx - 1].time
-            const height = killTime - timeToSeconds(prevTime)
+        <LineSegment3
+            height={getKillGroupTime(partitionedKills[0]) - timeToSeconds(round.roundStartTime)}
+            icon={<div className="avatar avatar-placeholder -top-1 tooltip">
+                <p className="tooltip-content">
+                    {Object.entries(round).map(([key, value]) => <p>{`${key}: ${key.toLowerCase().includes("time") ? timeToString(value) : JSON.stringify(value)}`}</p>)}
+                </p>
+                <div className="bg-indigo-800 text-neutral-content w-8 rounded-full">
+                    <span className="text-xs">{roundIdx + 1}</span>
+                </div>
+            </div>}
+            color
+        />
+        {partitionedKills.map((killGroup, idx) => {
+            const killTime = getKillGroupTime(killGroup)
+            const nextTime = idx === partitionedKills.length - 1 ? timeToSeconds(round.roundEndTime) : getKillGroupTime(partitionedKills[idx + 1])
+            const height = nextTime - killTime
             return <LineSegment3
-                key={kill.player2}
+                key={killGroup[0].player2}
                 height={height}
-                icon={<WeaponIcon id={kill.weapon} className="w-4 h-4 fill-yellow-400" />}
+                icon={<WeaponRow kills={killGroup} />}
                 color
             />
         })}
@@ -127,14 +141,11 @@ const LineSegment2 = ({ height, color, icon }: { height: number, color?: boolean
     </div>
 }
 const LineSegment3 = ({ height, color, icon }: { height: number, color?: boolean, icon?: ReactNode }) => {
-    const [collapsed, setCollapsed] = useState(false)
     const col = color ? "bg-indigo-900" : "bg-slate-900"
-    const vis = collapsed ? 'invisible' : 'visible'
     return <div
-        className={getLineHeightClassName(collapsed ? 20 : height) + " " + "w-full transition-[height] flex justify-center"}
-        onClick={() => setCollapsed(!collapsed)}
+        className={getLineHeightClassName(height) + " " + "w-full transition-[height] flex justify-center"}
     >
-        <div className={vis + " " + 'transition-[invisible] transition-[visible] duration-300 absolute'}>
+        <div className={'transition-[invisible] transition-[visible] duration-300 absolute'}>
             {icon}
         </div>
         <div className={col + " " + "w-4 h-full"} />
