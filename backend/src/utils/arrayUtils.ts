@@ -1,0 +1,1 @@
+export const removeArrayNulls = <T>(a: T[]) => a.reduce<T[]>((a, b) => b ? [...a, b] : a, [])
