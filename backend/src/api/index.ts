@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
-import { getMatchLog, getMatchLogs, getPlayers } from '../domain/matchesService';
 import { getKills, getMatch, getMatches, getRounds } from '../data/processedLogsClient';
+import { getMatchRawLog, getMatchRawLogs } from '../data/rawLogsClient';
 
 const app = express();
 const PORT = 3001;
@@ -50,7 +50,7 @@ app.get('/matches/:matchId/kills', async (_req, res) => {
 
 app.get('/match-logs/:matchId', async (_req, res) => {
   try {
-    const matchLog = await getMatchLog(_req.params.matchId);
+    const matchLog = await getMatchRawLog(_req.params.matchId);
     res.json(matchLog);
   } catch (err) {
     console.error(err);
@@ -60,7 +60,7 @@ app.get('/match-logs/:matchId', async (_req, res) => {
 
 app.get('/match-logs', async (_req, res) => {
   try {
-    const matchLogs = await getMatchLogs();
+    const matchLogs = await getMatchRawLogs();
     res.json(matchLogs);
   } catch (err) {
     console.error(err);

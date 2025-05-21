@@ -3,9 +3,6 @@ import type { MessageType, RawLogEntryTime } from "./rawModels";
 export interface LogVariable {
     raw: string
 }
-export interface PlayerLogVariable extends LogVariable {
-    playerTag: string
-}
 
 export interface ProcessedLogEntry {
     time: { hour: number, minute: number, second: number };
