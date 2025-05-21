@@ -7,10 +7,7 @@ import { WeaponRow } from "./WeaponRow"
 import { timeToSeconds, timeToString } from "../utils/time"
 import { Spinner } from "./Spinner"
 
-const getLineHeightClassName = (duration: number) => {
-    const n = Math.round(duration)
-    return numberToHeightClass(n)
-}
+const getLineHeightClassName = (duration: number) => numberToHeightClass(Math.round(duration))
 
 export const Timeline = ({ matchId }: { matchId: string }) => {
     const { data: match } = useGetMatch(matchId)
@@ -22,23 +19,15 @@ export const Timeline = ({ matchId }: { matchId: string }) => {
     const lastRoundEndTime = rounds[rounds.length - 1].roundEndTime
     const postroundDuration = timeToSeconds(match.endTime) - timeToSeconds(lastRoundEndTime)
 
-    return (
-        <ul className="timeline timeline-vertical">
-            {rounds.map((round, roundIdx) =>
-                <React.Fragment key={timeToString(round.roundStartTime)}>
-                    <InterRoundSegment
-                        height={getPreroundDuration(roundIdx)}
-                    >
-                    </InterRoundSegment>
-                    <RoundSegment round={round} roundIdx={roundIdx} matchId={matchId} />
-                </React.Fragment>
-            )}
-            <InterRoundSegment
-                height={postroundDuration}
-            >
-            </InterRoundSegment>
-        </ul >
-    )
+    return <>
+        {rounds.map((round, roundIdx) =>
+            <React.Fragment key={timeToString(round.roundStartTime)}>
+                <InterRoundSegment height={getPreroundDuration(roundIdx)} />
+                <RoundSegment round={round} roundIdx={roundIdx} matchId={matchId} />
+            </React.Fragment>
+        )}
+        <InterRoundSegment height={postroundDuration} />
+    </>
 }
 
 const RoundSegment = ({ round, roundIdx, matchId }: { round: MatchRound, roundIdx: number, matchId: string }) => {
@@ -50,7 +39,7 @@ const RoundSegment = ({ round, roundIdx, matchId }: { round: MatchRound, roundId
     const partitionedKillsDict = _.groupBy(kills, k => Math.ceil(timeToSeconds(k.time) / 5))
     const partitionedKills = _.values(partitionedKillsDict)
     const getKillGroupTime = (ks: Kill[]) => Math.min(...ks.map(k => k.time).map(timeToSeconds))
-    return <div>
+    return <>
         <WeaponSegment
             height={getKillGroupTime(partitionedKills[0]) - timeToSeconds(round.roundStartTime)}
             icon={<div className="avatar avatar-placeholder -top-1 tooltip">
@@ -65,25 +54,22 @@ const RoundSegment = ({ round, roundIdx, matchId }: { round: MatchRound, roundId
         {partitionedKills.map((killGroup, idx) => {
             const killTime = getKillGroupTime(killGroup)
             const nextTime = idx === partitionedKills.length - 1 ? timeToSeconds(round.roundEndTime) : getKillGroupTime(partitionedKills[idx + 1])
-            const height = nextTime - killTime
             return <WeaponSegment
                 key={killGroup[0].player2}
-                height={height}
+                height={nextTime - killTime}
                 icon={<WeaponRow kills={killGroup} className="relative -top-1" />}
             />
         })}
-    </div>
+    </>
 }
 
 const InterRoundSegment = ({ height }: { height: number }) => {
     const [collapsed, setCollapsed] = useState(false)
-    return <div
-        className={getLineHeightClassName(collapsed ? 20 : height) + " " + "transition-[height] flex justify-center"}
-        onClick={() => setCollapsed(!collapsed)}
-    >
-        <div className={"w-4 h-full border-1 bg-zinc-900 border-zinc-800"} />
+    return <div className={getLineHeightClassName(collapsed ? 20 : height) + " " + "transition-[height] flex justify-center"}>
+        <div onClick={() => setCollapsed(!collapsed)} className={"w-4 h-full border-1 bg-zinc-900 border-zinc-800"} />
     </div>
 }
+
 const WeaponSegment = ({ height, icon }: { height: number, icon?: ReactNode }) => {
     return <div
         className={getLineHeightClassName(height) + " " + "transition-[height] flex justify-center"}

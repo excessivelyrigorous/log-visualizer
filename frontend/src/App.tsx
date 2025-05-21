@@ -13,8 +13,7 @@ function App() {
   }
 
   return (
-    <div className="p-4">
-      <h1 className="text-xl font-bold">Log Visualizer</h1>
+    <div className="p-4 w-screen">
       <TimelinePage matchId={matchId} />
     </div>
   );

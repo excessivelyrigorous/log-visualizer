@@ -10,13 +10,13 @@ export const TimelinePage = ({ matchId }: { matchId: string }) => {
     }
     const scores = rounds[rounds.length - 1].teamScores
     return <>
-        <div className="flex items-center gap-2">
-            <div className="flex flex-row flex-1 justify-between items-center">
+        <div className="flex justify-center items-center gap-3">
+            <div className="flex flex-row flex-1 justify-between items-center max-w-50">
                 <div className="text-md">{scores[0].score}</div>
                 <div className="text-xl">{scores[0].team}</div>
             </div>
             <div className="flex-none">vs</div>
-            <div className="flex flex-row flex-1 justify-between items-center">
+            <div className="flex flex-row flex-1 justify-between items-center max-w-50">
                 <div className="text-xl">{scores[1].team}</div>
                 <div className="text-md">{scores[1].score}</div>
             </div>
