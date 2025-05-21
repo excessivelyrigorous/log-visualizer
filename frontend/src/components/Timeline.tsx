@@ -19,8 +19,8 @@ export const Timeline = ({ matchId }: { matchId: string }) => {
         return <Spinner />
     }
     const getPreroundDuration = (roundIdx: number) => timeToSeconds(rounds[roundIdx].roundStartTime) - timeToSeconds(rounds[roundIdx - 1]?.roundStartTime ?? match.startTime)
-    const lastRoundStartTime = rounds[rounds.length - 1].roundStartTime
-    const postroundDuration = timeToSeconds(match.endTime) - timeToSeconds(lastRoundStartTime)
+    const lastRoundEndTime = rounds[rounds.length - 1].roundEndTime
+    const postroundDuration = timeToSeconds(match.endTime) - timeToSeconds(lastRoundEndTime)
 
     return (
         <ul className="timeline timeline-vertical">
