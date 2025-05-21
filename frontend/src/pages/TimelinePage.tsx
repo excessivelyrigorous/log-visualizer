@@ -3,7 +3,7 @@ import { useGetRounds } from "../api/matches"
 import { Timeline } from "../components/Timeline"
 
 export const TimelinePage = ({ matchId }: { matchId: string }) => {
-    const { data: rounds, error: roundsError, isLoading: isLoadingRounds } = useGetRounds(matchId)
+    const { data: rounds } = useGetRounds(matchId)
     if (!rounds) {
         return <span className="loading loading-spinner loading-xl"></span>
     }
@@ -20,6 +20,6 @@ export const TimelinePage = ({ matchId }: { matchId: string }) => {
                 <div className="text-md">{scores[1].score}</div>
             </div>
         </div>
-        <Timeline />
+        <Timeline matchId={matchId} />
     </>
 }

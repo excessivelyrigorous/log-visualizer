@@ -1,6 +1,6 @@
-import type { Kill } from "../api/models/processedModels";
-import { timeToString } from "../utils/time";
-import { WeaponIcon } from "./WeaponIcon";
+import type { Kill } from "../api/models/processedModels"
+import { timeToString } from "../utils/time"
+import { WeaponIcon } from "./WeaponIcon"
 
 const TooltipContent = ({ kill }: { kill: Kill }) => <div className="flex flex-col gap-2">
     <div>{timeToString(kill.time)}</div>
@@ -23,5 +23,5 @@ export const WeaponRow = ({ kills, className }: { kills: Kill[] } & React.HTMLAt
                 </div>
             )}
         </div>
-    </div>;
-};
+    </div>
+}
