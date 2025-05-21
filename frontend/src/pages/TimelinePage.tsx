@@ -8,7 +8,7 @@ export const TimelinePage = ({ matchId }: { matchId: string }) => {
         return <span className="loading loading-spinner loading-xl"></span>
     }
     const scores = rounds[rounds.length - 1].teamScores
-    return <div className="w-full">
+    return <>
         <div className="flex items-center gap-2">
             <div className="flex flex-row flex-1 justify-between items-center">
                 <div className="text-md">{scores[0].score}</div>
@@ -21,5 +21,5 @@ export const TimelinePage = ({ matchId }: { matchId: string }) => {
             </div>
         </div>
         <Timeline />
-    </div>
+    </>
 }
