@@ -1,11 +1,12 @@
 import _ from "lodash"
 import { useGetRounds } from "../api/matches"
 import { Timeline } from "../components/Timeline"
+import { Spinner } from "../components/Spinner"
 
 export const TimelinePage = ({ matchId }: { matchId: string }) => {
     const { data: rounds } = useGetRounds(matchId)
     if (!rounds) {
-        return <span className="loading loading-spinner loading-xl"></span>
+        return <Spinner />
     }
     const scores = rounds[rounds.length - 1].teamScores
     return <>

@@ -2,13 +2,14 @@ import 'chart.js/auto';
 import _ from 'lodash';
 import { useGetMatches } from './api/matches';
 import { TimelinePage } from './pages/TimelinePage';
+import { Spinner } from './components/Spinner';
 
 function App() {
   const { data: matches } = useGetMatches()
   const matchId = matches?.[0].matchId
 
   if (!matchId) {
-    return <span className="loading loading-spinner loading-xl"></span>
+    return <Spinner />
   }
 
   return (

@@ -5,6 +5,7 @@ import { numberToHeightClass } from "../utils/numberToHeightClass"
 import _ from "lodash"
 import { WeaponRow } from "./WeaponRow"
 import { timeToSeconds, timeToString } from "../utils/time"
+import { Spinner } from "./Spinner"
 
 const getLineHeightClassName = (duration: number) => {
     const n = Math.round(duration)
@@ -15,7 +16,7 @@ export const Timeline = ({ matchId }: { matchId: string }) => {
     const { data: match } = useGetMatch(matchId)
     const { data: rounds } = useGetRounds(matchId)
     if (!rounds || !match) {
-        return <span className="loading loading-spinner loading-xl"></span>
+        return <Spinner />
     }
     const getPreroundDuration = (roundIdx: number) => timeToSeconds(rounds[roundIdx].roundStartTime) - timeToSeconds(rounds[roundIdx - 1]?.roundStartTime ?? match.startTime)
     const lastRoundStartTime = rounds[rounds.length - 1].roundStartTime
