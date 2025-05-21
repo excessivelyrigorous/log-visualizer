@@ -78,7 +78,7 @@ const RoundSegment = ({ round, roundIdx, matchId }: { round: MatchRound, roundId
             return <LineSegment3
                 key={killGroup[0].player2}
                 height={height}
-                icon={<WeaponRow kills={killGroup} />}
+                icon={<WeaponRow kills={killGroup} className="relative -top-1" />}
                 color
             />
         })}

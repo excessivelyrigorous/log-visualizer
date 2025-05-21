@@ -11,15 +11,17 @@ const TooltipContent = ({ kill }: { kill: Kill }) => <div className="flex flex-c
     </div>
 </div>
 
-export const WeaponRow = ({ kills }: { kills: Kill[]; }) => {
-    return <div className="flex flex-row gap-1">
-        {kills.map((kill, idx) =>
-            <div key={kill.player2} className={idx === 0 && kills.length > 1 ? "tooltip tooltip-left" : idx === kills.length - 1 && kills.length > 1 ? "tooltip tooltip-right" : "tooltip"}>
-                <div className="tooltip-content">
-                    <TooltipContent kill={kill} />
+export const WeaponRow = ({ kills, className }: { kills: Kill[] } & React.HTMLAttributes<HTMLDivElement>) => {
+    return <div className={className}>
+        <div className="flex flex-row gap-1">
+            {kills.map((kill, idx) =>
+                <div key={kill.player2} className={idx === 0 && kills.length > 1 ? "tooltip tooltip-left" : idx === kills.length - 1 && kills.length > 1 ? "tooltip tooltip-right" : "tooltip"}>
+                    <div className="tooltip-content">
+                        <TooltipContent kill={kill} />
+                    </div>
+                    <WeaponIcon id={kill.weapon} className="w-6 h-6 fill-yellow-400" />
                 </div>
-                <WeaponIcon id={kill.weapon} className="w-6 h-6 fill-yellow-400" />
-            </div>
-        )}
+            )}
+        </div>
     </div>;
 };
